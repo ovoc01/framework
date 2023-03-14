@@ -1,31 +1,18 @@
-package web.controller;
+package web.etu2074.framework.servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import web.methodinvoker.MethodHandler;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Vector;
 
-
-public class HttpHandlerGeneric extends HttpServlet {
+@WebServlet(name = "*",value = "/*")
+public class FrontServlet extends HttpServlet {
     private HttpServletRequest httpServletRequest;
     private HttpServletResponse httpServletResponse;
-
-    private MethodHandler methodHandler = new MethodHandler(this);
-
-    public HttpHandlerGeneric(){}
-    public MethodHandler getMethodHandler() {
-        return methodHandler;
-    }
-
-    public void setMethodHandler(MethodHandler methodHandler) {
-        this.methodHandler = methodHandler;
-    }
+    public FrontServlet(){}
 
     public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
         this.httpServletRequest = httpServletRequest;
@@ -60,22 +47,6 @@ public class HttpHandlerGeneric extends HttpServlet {
     public void processRequest(HttpServletRequest request,HttpServletResponse response) throws IOException,ServletException{
         setHttpServletRequest(request);setHttpServletResponse(response);
         Vector<String> stringVector = retrieveRequestUrl(request);
-        int length = stringVector.size();
-        if(length>1){
-            stringVector.forEach(t -> System.out.println(t));
-            Method method = getMethodHandler().getStringMethodMap().get(stringVector.get(1));
-            try {
-                response.getWriter().println(this);
-                method.invoke(this);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else{
-            response.sendRedirect("index.jsp");
-        }
     }
 
     @Override
